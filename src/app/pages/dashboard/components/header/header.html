@@ -1,0 +1,23 @@
+<header class="bg-gradient-to-r from-slate-800 to-slate-700 backdrop-blur-xl border-b border-slate-600 fixed w-full z-50 shadow-lg">
+    <div class="px-4 sm:px-20 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="relative">
+                <img src="https://imgs.search.brave.com/SrsHKoY2Y7VYmT4IHTIF5Yh2kvcb5LyKnJkizxVnLhc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucGV4ZWxzLmNv/bS9waG90b3MvODEx/MjIwMS9wZXhlbHMt/cGhvdG8tODExMjIw/MS5qcGVnP2F1dG89/Y29tcHJlc3MmY3M9/dGlueXNyZ2ImZHBy/PTEmdz01MDA"
+                    class="h-10 w-10 sm:h-12 sm:w-12 rounded-full shadow-lg border-2 border-white/30 object-cover transition-all duration-300 hover:scale-110 hover:shadow-xl hover:border-white/50" />
+                <div class="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white shadow-md"></div>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-white font-bold text-xl sm:text-2xl tracking-tight">LexHub</span>
+                <span class="text-slate-300 text-xs font-medium tracking-wide">ADMIN PANEL</span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="text-right hidden sm:block">
+                <div class="font-semibold text-white text-sm">{{ currentUser?.email || 'Carregando...' }}</div>
+                <div class="text-xs text-slate-300 font-medium uppercase tracking-wide">{{ currentUser?.role || 'Usuário' }}</div>
+            </div>
+            <app-logout-button></app-logout-button>
+        </div>
+    </div>
+</header>

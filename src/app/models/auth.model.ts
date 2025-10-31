@@ -8,7 +8,7 @@ export interface LoginTeamRequest {
   password: string;
 }
 
-export type UserRole = 'ADMIN' | 'COLLABORATOR' | 'USER';
+export type UserRole = 'ADMIN' | 'COLLABORATOR' | 'CLIENT';
 
 export interface User {
   id: string;

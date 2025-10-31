@@ -1,77 +1,84 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError, shareReplay } from 'rxjs/operators';
-import {
-    LoginUserRequest,
-    LoginTeamRequest,
-    LoginResponse
-} from '../models/auth.model';
+import { LoginUserRequest, LoginTeamRequest, LoginResponse, User } from '../models/auth.model';
+
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = 'http://localhost:3000';
-    private tokenValidationCache$: Observable<{ user: any }> | null = null;
+  private apiUrl = 'http://localhost:3000';
+  private tokenValidationCache$: Observable<{ user: User }> | null = null;
 
-    constructor(private http: HttpClient) { }
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
-    loginUser(cpf: string, password: string): Observable<LoginResponse> {
-        const cleanCpf = cpf.replace(/\D/g, '');
-        const body: LoginUserRequest = { cpf: cleanCpf, password };
+  constructor(private http: HttpClient) {}
 
-        return this.http.post<LoginResponse>(
-            `${this.apiUrl}/auth`,
-            body,
-            { withCredentials: true } 
-        ).pipe(
-            tap(() => this.clearTokenCache()) 
-        );
-    }
+  loginUser(cpf: string, password: string): Observable<LoginResponse> {
+    const cleanCpf = cpf.replace(/\D/g, '');
+    const body: LoginUserRequest = { cpf: cleanCpf, password };
 
-    loginTeam(email: string, password: string): Observable<LoginResponse> {
-        const body: LoginTeamRequest = { email, password };
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}/auth`,
+      body,
+      { withCredentials: true }
+    ).pipe(
+      tap(() => this.clearTokenCache())
+    );
+  }
 
-        return this.http.post<LoginResponse>(
-            `${this.apiUrl}/auth`,
-            body,
-            { withCredentials: true }
-        ).pipe(
-            tap(() => this.clearTokenCache()) 
-        );
-    }
+  loginTeam(email: string, password: string): Observable<LoginResponse> {
+    const body: LoginTeamRequest = { email, password };
 
-    validateToken(): Observable<{ user: any }> {
-        if (this.tokenValidationCache$) {
-            return this.tokenValidationCache$;
-        }
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}/auth`,
+      body,
+      { withCredentials: true }
+    ).pipe(
+      tap(() => this.clearTokenCache())
+    );
+  }
 
-        this.tokenValidationCache$ = this.http.get<{ user: any }>(
-            `${this.apiUrl}/auth/me`,
-            { withCredentials: true }
-        ).pipe(
-            tap(() => this.clearTokenCache()),
-            catchError((error) => {
-                this.tokenValidationCache$ = null;
-                throw error;
-            }),
-            shareReplay(1)
-        );
+  validateToken(): Observable<{ user: User }> {
+    if (this.tokenValidationCache$) return this.tokenValidationCache$;
 
-        return this.tokenValidationCache$;
-    }
-
-    clearTokenCache(): void {
+    this.tokenValidationCache$ = this.http.get<{ user: User }>(
+      `${this.apiUrl}/auth/me`,
+      { withCredentials: true }
+    ).pipe(
+      tap(res => this.currentUserSubject.next(res.user)), 
+      catchError(err => {
         this.tokenValidationCache$ = null;
-    }
+        this.currentUserSubject.next(null);
+        throw err;
+      }),
+      shareReplay(1)
+    );
 
-    logout(): Observable<{ success: boolean; message: string }> {
+    return this.tokenValidationCache$;
+  }
+
+  logout(): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.apiUrl}/auth/logout`,
+      {},
+      { withCredentials: true }
+    ).pipe(
+      tap(() => {
         this.clearTokenCache();
-        return this.http.post<{ success: boolean; message: string }>(
-            `${this.apiUrl}/auth/logout`,
-            {},
-            { withCredentials: true }
-        );
-    }
+      })
+    );
+  }
+
+  clearTokenCache(): void {
+    this.tokenValidationCache$ = null;
+    this.currentUserSubject.next(null);
+  }
+
+  get currentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
 }

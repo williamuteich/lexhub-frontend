@@ -18,8 +18,12 @@
       ],
       "@spartan-ng/helm/utils": [
         "./libs/ui/utils/src/index.ts"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
       ]
-    }
+    },
+    "baseUrl": "./"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
