@@ -15,8 +15,26 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+    loadComponent: () => import('./pages/dashboard/layout/dashboard-layout').then(m => m.DashboardLayout),
     canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+      },
+      {
+        path: 'processos',
+        loadComponent: () => import('./pages/dashboard/processos/processos').then(m => m.Processos),
+      },
+      {
+        path: 'equipe',
+        loadComponent: () => import('./pages/dashboard/equipe/equipe').then(m => m.Equipe),
+      },
+      {
+        path: 'clientes',
+        loadComponent: () => import('./pages/dashboard/clientes/clientes').then(m => m.Clientes),
+      }
+    ]
   },
   {
     path: '',
