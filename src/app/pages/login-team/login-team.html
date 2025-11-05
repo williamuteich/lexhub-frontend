@@ -42,12 +42,12 @@
                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <input [type]="showPassword ? 'text' : 'password'" id="password" [(ngModel)]="password" name="password"
+            <input [type]="(showPassword()) ? 'text' : 'password'" id="password" [(ngModel)]="password" name="password"
               placeholder="Digite sua senha"
               class="block w-full pl-10 pr-10 py-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" />
             <button type="button" (click)="togglePasswordVisibility()"
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition">
-              @if (!showPassword) {
+              @if (!showPassword()) {
                 <svg class="w-5 h-5 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -64,9 +64,9 @@
           </div>
         </div>
 
-        @if (errorMessage) {
+        @if (errorMessage()) {
           <div class="p-3 bg-red-500/10 border border-red-500/50 rounded-lg">
-            <p class="text-red-400 text-sm">{{ errorMessage }}</p>
+            <p class="text-red-400 text-sm">{{ errorMessage() }}</p>
           </div>
         }
 
@@ -77,9 +77,9 @@
         </div>
 
         <button type="submit"
-          [disabled]="isLoading"
+          [disabled]="isLoading()"
           class="w-full cursor-pointer bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 transform hover:scale-[1.02] transition duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-          @if (!isLoading) {
+          @if (!isLoading()) {
             <span>Entrar</span>
           } @else {
             <span class="flex items-center justify-center">

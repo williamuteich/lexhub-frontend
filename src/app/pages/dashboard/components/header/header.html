@@ -14,8 +14,8 @@
 
         <div class="flex items-center space-x-4">
             <div class="text-right hidden sm:block">
-                <div class="font-semibold text-white text-sm">{{ currentUser?.email || 'Carregando...' }}</div>
-                <div class="text-xs text-slate-300 font-medium uppercase tracking-wide">{{ currentUser?.role || 'Usuário' }}</div>
+                <div class="font-semibold text-white text-sm">{{ userName() || 'Carregando...' }}</div>
+                <div class="text-xs text-slate-300 font-medium uppercase tracking-wide">{{ userEmail() || 'Usuário' }}</div>
             </div>
             <app-logout-button></app-logout-button>
         </div>

@@ -1,19 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap, catchError, shareReplay } from 'rxjs/operators';
 import { LoginUserRequest, LoginTeamRequest, LoginResponse, User } from '../models/auth.model';
-
+import { environment } from '../../environments/environment';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
   private tokenValidationCache$: Observable<{ user: User }> | null = null;
 
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
+  readonly currentUser = signal<User | null>(null);
+  
+  readonly isAuthenticated = computed(() => !!this.currentUser());
+  readonly userRole = computed(() => this.currentUser()?.role ?? null);
+  readonly userName = computed(() => this.currentUser()?.name ?? 'Usuário');
+  readonly userEmail = computed(() => this.currentUser()?.email);
+  
+  readonly currentUser$ = toObservable(this.currentUser);
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +33,13 @@ export class AuthService {
       body,
       { withCredentials: true }
     ).pipe(
-      tap(() => this.clearTokenCache())
+      tap((response) => {
+        if (response.user) {
+          this.currentUser.set(response.user);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+        }
+        this.clearTokenCache();
+      })
     );
   }
 
@@ -38,7 +51,13 @@ export class AuthService {
       body,
       { withCredentials: true }
     ).pipe(
-      tap(() => this.clearTokenCache())
+      tap((response) => {
+        if (response.user) {
+          this.currentUser.set(response.user);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+        }
+        this.clearTokenCache();
+      })
     );
   }
 
@@ -49,10 +68,10 @@ export class AuthService {
       `${this.apiUrl}/auth/me`,
       { withCredentials: true }
     ).pipe(
-      tap(res => this.currentUserSubject.next(res.user)), 
+      tap(res => this.currentUser.set(res.user)), 
       catchError(err => {
         this.tokenValidationCache$ = null;
-        this.currentUserSubject.next(null);
+        this.currentUser.set(null);
         throw err;
       }),
       shareReplay(1)
@@ -75,10 +94,6 @@ export class AuthService {
 
   clearTokenCache(): void {
     this.tokenValidationCache$ = null;
-    this.currentUserSubject.next(null);
-  }
-
-  get currentUser(): User | null {
-    return this.currentUserSubject.value;
+    this.currentUser.set(null);
   }
 }

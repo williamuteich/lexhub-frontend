@@ -21,6 +21,7 @@ export interface User {
 export interface LoginResponse {
   success: boolean;
   message: string;
+  user?: User;
 }
 
 export interface ForgotPasswordRequest {

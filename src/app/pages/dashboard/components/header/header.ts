@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { LogoutButton } from 'src/app/components/logout-button/logout-button';
-import { AuthService } from 'src/app/services/auth.service';
+import { LogoutButton } from '../../../../components/logout-button/logout-button';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard-header',
@@ -9,10 +9,9 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './header.html'
 })
 export class DashboardHeader {
-  private authService = inject(AuthService);
-
-  get currentUser() {
-    console.log(this.authService.currentUser);
-    return this.authService.currentUser;
-  }
+  protected authService = inject(AuthService);
+  
+  protected userName = this.authService.userName;
+  protected userRole = this.authService.userRole;
+  protected userEmail = this.authService.userEmail;
 }
