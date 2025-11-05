@@ -12,6 +12,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class LoginTeam {
   private destroyRef = inject(DestroyRef);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   email: string = '';
   password: string = '';
@@ -19,11 +21,6 @@ export class LoginTeam {
   showPassword = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
 
   togglePasswordVisibility(): void {
     this.showPassword.update(value => !value);

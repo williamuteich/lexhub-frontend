@@ -13,6 +13,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class Login {
   private destroyRef = inject(DestroyRef);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   cpf: string = '';
   password: string = '';
@@ -20,11 +22,6 @@ export class Login {
   showPassword = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
 
   togglePasswordVisibility(): void {
     this.showPassword.update(value => !value);

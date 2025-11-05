@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap, catchError, shareReplay } from 'rxjs/operators';
@@ -10,19 +10,20 @@ import { toObservable } from '@angular/core/rxjs-interop';
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  
   private apiUrl = environment.apiUrl;
   private tokenValidationCache$: Observable<{ user: User }> | null = null;
 
   readonly currentUser = signal<User | null>(null);
   
   readonly isAuthenticated = computed(() => !!this.currentUser());
+  readonly userAvatar = computed(() => this.currentUser()?.avatar ?? null);
   readonly userRole = computed(() => this.currentUser()?.role ?? null);
   readonly userName = computed(() => this.currentUser()?.name ?? 'Usuário');
   readonly userEmail = computed(() => this.currentUser()?.email);
   
   readonly currentUser$ = toObservable(this.currentUser);
-
-  constructor(private http: HttpClient) {}
 
   loginUser(cpf: string, password: string): Observable<LoginResponse> {
     const cleanCpf = cpf.replace(/\D/g, '');
