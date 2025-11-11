@@ -5,7 +5,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-logout-button',
-  standalone: true,
   template: `
     <button
       (click)="onLogout()"

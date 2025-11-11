@@ -3,11 +3,11 @@ import { LogoutButton } from '../../../../components/logout-button/logout-button
 import { AuthService } from '../../../../services/auth.service';
 import { Sidebar } from '../../../../components/sidebar/sidebar';
 import { MenuItem } from '../../../../models/menu.model';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-dashboard-header',
-  standalone: true,
-  imports: [LogoutButton, Sidebar],
+  imports: [LogoutButton, Sidebar, RouterLink],
   templateUrl: './header.html'
 })
 export class DashboardHeader {

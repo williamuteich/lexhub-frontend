@@ -1,4 +1,28 @@
-<div class="bg-white rounded-2xl shadow-md border border-gray-300 overflow-hidden p-6">
-  <h2 class="text-2xl font-bold mb-4">Equipe</h2>
-  <p class="text-gray-600">Aqui você gerencia os colaboradores e permissões.</p>
+<div class="bg-white rounded-2xl shadow-md border border-gray-300 overflow-hidden p-6 mt-6">
+  <h2 class="text-2xl font-bold mb-1 text-gray-800">Equipe</h2>
+  <span class="text-sm text-gray-500 block mb-6">
+    Gerencie sua Equipe de forma simples e organizada. Aqui você pode adicionar novos registros, editar informações existentes e acompanhar o histórico de cada Colaborador.
+  </span>
+
+  <div class="flex justify-between items-center flex-wrap gap-4 mb-6">
+    <app-search-input></app-search-input>
+    <button
+      class="btn bg-gradient-to-r border-none from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium shadow-md px-5 py-2 rounded-md transition-all duration-200">
+      Adicionar Colaborador
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <app-table-skeleton [rows]="5"></app-table-skeleton>
+  } @else if (hasError()) {
+    <div class="flex flex-col items-center justify-center py-12 text-red-600">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-16 h-16 mb-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+      </svg>
+      <p class="font-bold text-lg">Erro ao carregar colaboradores</p>
+      <p class="text-sm text-gray-600 mt-2">Tente novamente mais tarde</p>
+    </div>
+  } @else {
+    <app-table [headers]="tableHeaders" [data]="tableData()"></app-table>
+  }
 </div>
